@@ -71,3 +71,7 @@ Scrutinizing an entire project:
  - main, both
  - workers scripts
  - validator, schema
+
+##### 16th session (25m)
+Fix tests.
+Push to repo.
