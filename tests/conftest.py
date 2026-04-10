@@ -1,6 +1,4 @@
 import uuid
-import asyncio
-import gc
 
 import pytest
 import pytest_asyncio

@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from app.db.models.payment import Currency, Outbox, Payment, PaymentStatus
 from app.workers.outbox.outbox_worker import _poll_once
-from tests.conftest import test_engine as _test_engine
+from tests.conftest import test_engine, make_payment
 
 
 @pytest_asyncio.fixture(loop_scope="session")
@@ -16,27 +16,10 @@ async def factory(test_engine):
     return async_sessionmaker(test_engine, expire_on_commit=False)
 
 
-async def _make_payment(factory: async_sessionmaker) -> Payment:
-    async with factory() as s:
-        payment = Payment(
-            idempotency_key=str(uuid.uuid4()),
-            amount=100,
-            currency=Currency.RUB,
-            description="test",
-            webhook_url="http://localhost:9999/webhook",
-            status=PaymentStatus.pending,
-        )
-        s.add(payment)
-        await s.flush()
-        s.add(Outbox(payment_id=payment.id))
-        await s.commit()
-        return payment
-
-
 @patch("app.workers.outbox.outbox_worker.broker")
 async def test_poll_publishes_pending_entry(mock_broker, factory):
     mock_broker.publish = AsyncMock()
-    payment = await _make_payment(factory)
+    payment = await make_payment(factory)
 
     await _poll_once(factory)
 
@@ -49,7 +32,7 @@ async def test_poll_publishes_pending_entry(mock_broker, factory):
 @patch("app.workers.outbox.outbox_worker.broker")
 async def test_poll_sets_published_at(mock_broker, factory, test_engine):
     mock_broker.publish = AsyncMock()
-    payment = await _make_payment(factory)
+    payment = await make_payment(factory)
 
     await _poll_once(factory)
 
@@ -92,8 +75,8 @@ async def test_poll_empty_outbox(mock_broker, factory):
 @patch("app.workers.outbox.outbox_worker.broker")
 async def test_poll_publishes_multiple_entries(mock_broker, factory):
     mock_broker.publish = AsyncMock()
-    await _make_payment(factory)
-    await _make_payment(factory)
+    await make_payment(factory)
+    await make_payment(factory)
 
     await _poll_once(factory)
 

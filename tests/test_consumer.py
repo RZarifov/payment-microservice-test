@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy import select
 
 from app.db.models.payment import Currency, Outbox, Payment, PaymentStatus
 from app.workers.consumer.handler import process_payment
@@ -22,7 +23,6 @@ async def test_process_payment_success_updates_status(mock_webhook, mock_emulate
     await process_payment(str(payment.id), factory)
 
     async with factory() as s:
-        from sqlalchemy import select
         result = await s.execute(select(Payment).where(Payment.id == payment.id))
         updated = result.scalar_one()
     assert updated.status == PaymentStatus.succeeded
@@ -36,7 +36,6 @@ async def test_process_payment_failure_updates_status(mock_webhook, mock_emulate
     await process_payment(str(payment.id), factory)
 
     async with factory() as s:
-        from sqlalchemy import select
         result = await s.execute(select(Payment).where(Payment.id == payment.id))
         updated = result.scalar_one()
     assert updated.status == PaymentStatus.failed
