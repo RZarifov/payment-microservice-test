@@ -21,6 +21,7 @@ async def lifespan(app: FastAPI):
     poller_task = asyncio.create_task(run_outbox_poller(async_session_factory))
     yield
     poller_task.cancel()
+    await asyncio.gather(poller_task, return_exceptions=True)
     await broker.close()
 
 
