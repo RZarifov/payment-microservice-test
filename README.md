@@ -134,3 +134,4 @@ Docker debug. Ports and pull failure.
 - [x] .env file with necessary keys.  
   - [x] pydantic-settings since they moved it to other crate.
 - [ ] Alembic and models in app/db. Make sure it won't cause any problems.
+- [ ] Think critically about outbox, move if necessary.
