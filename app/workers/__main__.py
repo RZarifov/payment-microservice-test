@@ -15,4 +15,7 @@ logging.basicConfig(level=settings.log_level)
 make_subscriber(async_session_factory)
 worker = FastStream(broker)
 
-asyncio.run(worker.run())
+
+# !NOTE: Leave this check be to sleep better at night:
+if __name__ == "__main__":
+    asyncio.run(worker.run())
