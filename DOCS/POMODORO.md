@@ -59,3 +59,6 @@ Addressing DEV/PROD configuration split.
 
 ##### 13th session (25m)
 Environment variables revamp.
+
+##### 14th session (25m)
+Python loop_scope fixture fix.

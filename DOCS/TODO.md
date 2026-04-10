@@ -14,6 +14,7 @@
 - [x] Check deprecation warnings.
 - [x] Make test database creation automatic.
 - [ ] Pytest fails to get loop scope from toml config. Fix.
+  - [ ] Or move away from config and explicitly mention in fixtures.
 - [x] Fix ugly hack for session fixture in tests and replace it with context manager.
 - [x] Различные конфиги для DEV и PROD, чтобы можно было менять одним параметром в .env
 - [-] Генерация API-KEY и сессии.  
