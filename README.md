@@ -62,9 +62,10 @@ make run_both
 `RABBITMQ_PASSWORD` — пароль RabbitMQ
 `API_KEY` — статический ключ авторизации
 `SERVICE_TITLE` — название сервиса
-`OUTBOX_POLL_INTERVAL` — интервал поллинга outbox в секундах (По умолчанию: 1.0)
+`OUTBOX_POLL_INTERVAL` — интервал поллинга outbox в секундах (По умолчанию: 1 секунда)
 `WEBHOOK_RETRY_ATTEMPTS` — количество попыток доставки webhook (По умолчанию: 5)
-`WEBHOOK_RETRY_BASE_DELAY` — начальная задержка retry в секундах (По умолчанию: 1.0)
+`WEBHOOK_RETRY_BASE_DELAY` — начальная задержка retry в секундах (По умолчанию: 1 секунда)
+`WEBHOOK_TIMEOUT` - время ожидания outbox вебхука. (По умолчанию: 10 секунд)
 `LOG_LEVEL` — уровень логирования (По умолчанию: INFO)
 
 ---
