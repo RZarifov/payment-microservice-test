@@ -32,17 +32,21 @@ async def process_payment(payment_id: str, factory: async_sessionmaker[AsyncSess
         success = await _emulate_processing()
         payment.status = PaymentStatus.succeeded if success else PaymentStatus.failed
         payment.processed_at = datetime.now(timezone.utc)
+
         await session.commit()
         await session.refresh(payment)
 
-    webhook_payload = {
-        "payment_id": str(payment.id),
-        "status": payment.status.value,
-        "amount": str(payment.amount),
-        "currency": payment.currency.value,
-    }
+        webhook_payload = {
+            "payment_id": str(payment.id),
+            "status": payment.status.value,
+            "amount": str(payment.amount),
+            "currency": payment.currency.value,
+        }
 
-    delivered = await send_webhook(payment.webhook_url, webhook_payload)
+        webhook_url = payment.webhook_url
+
+    delivered = await send_webhook(webhook_url, webhook_payload)
+
     if not delivered:
         logger.error("webhook delivery exhausted for payment %s, publishing to DLQ", payment_id)
         await broker.publish(
