@@ -102,6 +102,48 @@
 
 ---
 
+## DATABASE INIT AND INITIAL LAUNCH
+```
+# INITIATES AND PRIMES DOCKER
+make up
+
+# MAKES MIGRATIONS FOR ALEMBIC
+make migrate
+
+# MAKES REVISION FOR ALEMBIC
+make revision m="create payments and outbox"
+
+# LAUNCH THE APP THEN TEST THROUGH CURL
+make run
+```
+
+---
+
+## TEST CURL
+
+##### Create payment
+```
+curl -i -X POST http://localhost:8000/api/v1/payments \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: luna_test" \
+  -H "Idempotency-Key: test-001" \
+  -d '{
+    "amount": "100.00",
+    "currency": "RUB",
+    "description": "test payment",
+    "webhook_url": "http://localhost:9999/webhook"
+  }'
+```
+
+##### Fetch payment
+```
+PAYMENT_ID=<<<YOUR PAYMENT ID HERE>>>
+curl -i http://localhost:8000/api/v1/payments/$PAYMENT_ID \
+  -H "X-API-Key: luna_test"
+```
+
+---
+
 ## Pomodoro execution: 
 
 ##### First session (25m)
@@ -122,6 +164,17 @@ Make database and models
 Alembic and project structure tweaking
 Docker debug. Ports and pull failure.
 
+##### 5th session (25m)
+Core app endpoints, schemas, services.
+Makefile.
+`__init__.py` files.
+Test curl.
+Add necessary instructions to README.md
+
+##### 6th session (25m)
+Manually testing endpoints.
+Creating pytest tests.
+
 ---
 
 ## TODO:
@@ -135,3 +188,4 @@ Docker debug. Ports and pull failure.
   - [x] pydantic-settings since they moved it to other crate.
 - [ ] Alembic and models in app/db. Make sure it won't cause any problems.
 - [ ] Think critically about outbox, move if necessary.
+- [ ] Check deprecation warnings.
