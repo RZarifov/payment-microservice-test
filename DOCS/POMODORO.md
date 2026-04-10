@@ -54,3 +54,8 @@ Explaining architecture.
 
 ##### 12th session (25m)
 Continuing with architecture.
+Addressing deprecation warnings in RMQ.  
+Addressing DEV/PROD configuration split.  
+
+##### 13th session (25m)
+Environment variables revamp.
