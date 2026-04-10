@@ -16,7 +16,7 @@ dependencies = [
     "alembic (>=1.18.4,<2.0.0)",
     "uvicorn (>=0.44.0,<0.45.0)",
     # v RMQ v
-    "faststream (>=0.6.7,<0.7.0)",
+    "faststream[rabbit] (>=0.6.7,<0.7.0)",
     # v WEBHOOKS v
     "httpx (>=0.28.1,<0.29.0)",
     # v TESTS v

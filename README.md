@@ -181,6 +181,7 @@ Creating environment for tests.
 
 ##### 8th session (25m)
 Changing the strategy for tests: deny everything then allow specific.
+Outbox worker.
 
 ---
 
