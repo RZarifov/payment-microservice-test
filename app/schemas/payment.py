@@ -11,11 +11,11 @@ from app.db.models.payment import Currency, PaymentStatus
 
 
 class PaymentCreate(BaseModel):
-    amount: Decimal
+    amount: Decimal = Field(gt=0)
     currency: Currency
-    description: str
+    description: str = Field(min_length=1)
     metadata: dict[str, Any] | None = None
-    webhook_url: str
+    webhook_url: str = Field(min_length=1)
 
 
 class PaymentResponse(BaseModel):

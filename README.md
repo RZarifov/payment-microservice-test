@@ -179,6 +179,9 @@ Tweaking schemas, endpoints.
 Creating pytest tests.
 Creating environment for tests.
 
+##### 8th session (25m)
+Changing the strategy for tests: deny everything then allow specific.
+
 ---
 
 ## TODO:

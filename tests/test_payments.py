@@ -122,3 +122,48 @@ async def test_get_payment_wrong_api_key_returns_401(client: AsyncClient):
 async def test_get_payment_invalid_uuid_returns_422(client: AsyncClient):
     response = await client.get("/api/v1/payments/not-a-uuid", headers=AUTH_HEADERS)
     assert response.status_code == 422
+
+
+async def test_create_payment_negative_amount_returns_422(client: AsyncClient):
+    body = {**PAYMENT_BODY, "amount": "-100.00"}
+    response = await client.post("/api/v1/payments", json=body, headers=IDEM_HEADERS)
+    assert response.status_code == 422
+
+
+async def test_create_payment_zero_amount_returns_422(client: AsyncClient):
+    body = {**PAYMENT_BODY, "amount": "0.00"}
+    response = await client.post("/api/v1/payments", json=body, headers=IDEM_HEADERS)
+    assert response.status_code == 422
+
+
+async def test_create_payment_missing_amount_returns_422(client: AsyncClient):
+    body = {k: v for k, v in PAYMENT_BODY.items() if k != "amount"}
+    response = await client.post("/api/v1/payments", json=body, headers=IDEM_HEADERS)
+    assert response.status_code == 422
+
+
+async def test_create_payment_missing_webhook_url_returns_422(client: AsyncClient):
+    body = {k: v for k, v in PAYMENT_BODY.items() if k != "webhook_url"}
+    response = await client.post("/api/v1/payments", json=body, headers=IDEM_HEADERS)
+    assert response.status_code == 422
+
+
+async def test_create_payment_missing_currency_returns_422(client: AsyncClient):
+    body = {k: v for k, v in PAYMENT_BODY.items() if k != "currency"}
+    response = await client.post("/api/v1/payments", json=body, headers=IDEM_HEADERS)
+    assert response.status_code == 422
+
+
+async def test_create_payment_missing_description_returns_422(client: AsyncClient):
+    body = {k: v for k, v in PAYMENT_BODY.items() if k != "description"}
+    response = await client.post("/api/v1/payments", json=body, headers=IDEM_HEADERS)
+    assert response.status_code == 422
+
+
+async def test_create_payment_outbox_linked_to_correct_payment(client: AsyncClient, test_engine):
+    response = await client.post("/api/v1/payments", json=PAYMENT_BODY, headers=IDEM_HEADERS)
+    payment_id = response.json()["id"]
+    async with async_sessionmaker(test_engine, expire_on_commit=False)() as s:
+        result = await s.execute(select(Outbox))
+        entry = result.scalars().first()
+    assert str(entry.payment_id) == payment_id
