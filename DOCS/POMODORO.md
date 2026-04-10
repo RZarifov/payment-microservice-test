@@ -65,3 +65,9 @@ Python loop_scope fixture fix.
 Scrutinizing an entire project:
  - Update README.md
  - Update Makefile
+
+##### 15th session (25m)
+Scrutinizing an entire project:
+ - main, both
+ - workers scripts
+ - validator, schema

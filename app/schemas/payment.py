@@ -5,7 +5,8 @@ from decimal import Decimal
 # NOTE: Any FOR NOW. IF NECESSARY WILL BE MORE GRANULAR IN THE FUTURE
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, AnyHttpUrl
+from pydantic import field_validator
 
 from app.db.models.payment import Currency, PaymentStatus
 
@@ -15,7 +16,12 @@ class PaymentCreate(BaseModel):
     currency: Currency
     description: str = Field(min_length=1)
     metadata: dict[str, Any] | None = None
-    webhook_url: str = Field(min_length=1)
+    webhook_url: AnyHttpUrl
+
+    @field_validator("webhook_url", mode="after")
+    @classmethod
+    def webhook_url_to_str(cls, v) -> str:
+        return str(v)
 
 
 class PaymentResponse(BaseModel):
