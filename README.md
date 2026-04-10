@@ -114,6 +114,14 @@ Doing initial docker compose and docker preparation.
 
 Doing dependencies besides services.
 
+##### Third session (25m)
+Move to .env
+Make database and models
+
+##### 4th session (25m)
+Alembic and project structure tweaking
+Docker debug. Ports and pull failure.
+
 ---
 
 ## TODO:
@@ -125,3 +133,4 @@ Doing dependencies besides services.
 - [ ] If necessary move python into separate container for encapsulation.
 - [x] .env file with necessary keys.  
   - [x] pydantic-settings since they moved it to other crate.
+- [ ] Alembic and models in app/db. Make sure it won't cause any problems.
