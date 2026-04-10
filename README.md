@@ -183,6 +183,15 @@ Creating environment for tests.
 Changing the strategy for tests: deny everything then allow specific.
 Outbox worker.
 
+##### 9th session (25m)
+Consumer:
+- Webhook.
+- Entry point.
+- Tests
+
+##### 10th session (25m)
+Scrutinizing over consumer.
+
 ---
 
 ## TODO:

@@ -1,3 +1,4 @@
+import uuid
 import asyncio
 import gc
 
@@ -9,7 +10,10 @@ from sqlalchemy.pool import NullPool
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.api.deps import get_db
+
 from app.db.base import Base
+from app.db.models.payment import Payment, PaymentStatus, Currency, Outbox
+
 from app.main import app
 from app.settings.config import settings
 
@@ -55,6 +59,29 @@ async def client(test_engine, loop_scope="session"):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         yield ac
     app.dependency_overrides.clear()
+
+
+async def make_payment(factory: async_sessionmaker) -> Payment:
+    async with factory() as s:
+        payment = Payment(
+            idempotency_key=str(uuid.uuid4()),
+            amount=100,
+            currency=Currency.RUB,
+            description="test",
+            webhook_url="http://localhost:9999/webhook",
+            status=PaymentStatus.pending,
+        )
+        s.add(payment)
+        await s.flush()
+        s.add(Outbox(payment_id=payment.id))
+        await s.commit()
+        await s.refresh(payment)
+        return payment
+
+
+@pytest_asyncio.fixture(loop_scope="session")
+async def factory(test_engine):
+    return async_sessionmaker(test_engine, expire_on_commit=False)
 
 
 PAYMENT_BODY = {
