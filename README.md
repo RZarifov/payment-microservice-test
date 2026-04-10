@@ -123,6 +123,5 @@ Doing dependencies besides services.
   - RabbitMQ
 - [ ] CRITICAL: Remove postgres port out of scope.
 - [ ] If necessary move python into separate container for encapsulation.
-- [ ] .env file with necessary keys.  
-  - [ ] pydantic-settings since they moved it to other crate.
-
+- [x] .env file with necessary keys.  
+  - [x] pydantic-settings since they moved it to other crate.
