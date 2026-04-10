@@ -30,16 +30,11 @@ make run
 make consumer  # запускает обработчик очереди (отдельный терминал)
 ```
 
-##### Запустить в режиме разработчика на порту 8000:
-```bash
-make run_dev
-```
-
-##### Ну или запустить сразу и консьюмер поверх RMQ и сам микросервис:
+##### Запустить сразу и консьюмер поверх RMQ и сам микросервис:
 ```bash
 make run_both
 ```
-**NOTE:** По умолчанию также запускается на порту 8000.
+**NOTE:** По умолчанию запускается на порту 8000.
 
 ---
 
@@ -51,14 +46,26 @@ make run_both
 
 ## Конфигурация
 
-Все параметры задаются через `.env`:
+## Конфигурация
 
-`DATABASE_URL` — asyncpg DSN
-`RABBITMQ_URL` — amqp DSN
+Все параметры задаются через `.env`. Пример в `.env.example`.
+
+`ENV` — окружение, `DEV` или `PROD`
+`POSTGRES_HOST` — хост PostgreSQL
+`POSTGRES_PORT` — порт PostgreSQL (По умолчанию: 5432)
+`POSTGRES_DB` — имя базы данных
+`POSTGRES_USER` — пользователь БД
+`POSTGRES_PASSWORD` — пароль БД
+`RABBITMQ_HOST` — хост RabbitMQ
+`RABBITMQ_PORT` — порт RabbitMQ (По умолчанию: 5672)
+`RABBITMQ_USER` — пользователь RabbitMQ
+`RABBITMQ_PASSWORD` — пароль RabbitMQ
 `API_KEY` — статический ключ авторизации
-`OUTBOX_POLL_INTERVAL` — интервал поллинга outbox в секундах (default: 1.0)
-`WEBHOOK_RETRY_ATTEMPTS` — количество попыток доставки webhook (default: 5)
-`WEBHOOK_RETRY_BASE_DELAY` — начальная задержка retry в секундах (default: 1.0)
+`SERVICE_TITLE` — название сервиса
+`OUTBOX_POLL_INTERVAL` — интервал поллинга outbox в секундах (По умолчанию: 1.0)
+`WEBHOOK_RETRY_ATTEMPTS` — количество попыток доставки webhook (По умолчанию: 5)
+`WEBHOOK_RETRY_BASE_DELAY` — начальная задержка retry в секундах (По умолчанию: 1.0)
+`LOG_LEVEL` — уровень логирования (По умолчанию: INFO)
 
 ---
 
@@ -129,7 +136,7 @@ curl -i http://localhost:8000/api/v1/payments/$PAYMENT_ID \
   -H "X-API-Key: luna_test"
 ```
 
-# Polling статуса платежа
+### Polling статуса платежа
 
 Поскольку платёж обрабатывается асинхронно, сразу после создания он находится в статусе `pending`. Для получения финального статуса необходимо периодически опрашивать GET эндпоинт:
 
@@ -167,6 +174,6 @@ make test
 - FastAPI + Pydantic v2
 - SQLAlchemy 2.0 (async)
 - PostgreSQL 17
-- RabbitMQ 3.13 (with FastStream)
+- RabbitMQ 3.12 (with FastStream)
 - Alembic
 - Docker + docker-compose

@@ -1,4 +1,4 @@
-.PHONY: up down logs migrate revision run test
+.PHONY: up down logs migrate revision run run_both consumer test
 
 include .env
 export
@@ -34,9 +34,15 @@ else
 endif
 
 run_both:
+ifeq ($(ENV),DEV)
 	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 & \
 	python -m app.workers & \
 	wait
+else
+	uvicorn app.main:app --host 0.0.0.0 --port 8000 & \
+	python -m app.workers & \
+	wait
+endif
 
 consumer:
 	python -m app.workers

@@ -62,3 +62,6 @@ Environment variables revamp.
 
 ##### 14th session (25m)
 Python loop_scope fixture fix.
+Scrutinizing an entire project:
+ - Update README.md
+ - Update Makefile
