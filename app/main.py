@@ -15,6 +15,7 @@ from app.workers.outbox.outbox_worker import run_outbox_poller
 logging.basicConfig(level=settings.log_level)
 
 
+# !NOTE: Maybe full-blown class is better. For control
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await broker.connect()
