@@ -1,4 +1,4 @@
-.PHONY: up down logs migrate revision run
+.PHONY: up down logs migrate revision run test
 
 up:
 	docker compose up -d
@@ -17,3 +17,6 @@ revision:
 
 run:
 	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+test:
+	pytest tests/ -v

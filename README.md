@@ -173,7 +173,11 @@ Add necessary instructions to README.md
 
 ##### 6th session (25m)
 Manually testing endpoints.
+Tweaking schemas, endpoints.
+
+##### 7th session (25m)
 Creating pytest tests.
+Creating environment for tests.
 
 ---
 
@@ -189,3 +193,6 @@ Creating pytest tests.
 - [ ] Alembic and models in app/db. Make sure it won't cause any problems.
 - [ ] Think critically about outbox, move if necessary.
 - [ ] Check deprecation warnings.
+- [x] Make test database creation automatic.
+- [ ] Pytest fails to get loop scope from toml config. Fix.
+- [x] Fix ugly hack for session fixture in tests and replace it with context manager.
