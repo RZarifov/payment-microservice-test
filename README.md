@@ -99,3 +99,28 @@
 - Идемпотентность
 - Обработка ошибок и retry логика
 - Работоспособность Docker-окружения
+
+---
+
+## Pomodoro execution: 
+
+##### First session (25m)
+Project init; test task familiarization; README.md formatting.  
+
+##### Second session (25m)
+- Decided to put outbox poller within the async app itself. Queries every N seconds and makes a publish. Later can be moved away from app async loop if necessary.  
+  
+Doing initial docker compose and docker preparation.  
+
+Doing dependencies besides services.
+
+---
+
+## TODO:
+
+- [ ] CRITICAL: Move secrets to vault.
+  - Postgres
+  - RabbitMQ
+- [ ] CRITICAL: Remove postgres port out of scope.
+- [ ] If necessary move python into separate container for encapsulation.
+- [ ] .env file with necessary keys.  
