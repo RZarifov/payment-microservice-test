@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db, verify_api_key
 from app.schemas.payment import PaymentCreate, PaymentResponse
-from app.services.payment import create_payment, get_by_idempotency_key, get_payment
+from app.services.payment import create_payment, get_payment
 
 
 router = APIRouter(prefix="/api/v1/payments", tags=["payments"])
@@ -19,9 +19,6 @@ async def create_payment_endpoint(
     session: AsyncSession = Depends(get_db),
     _: None = Depends(verify_api_key),
 ):
-    existing = await get_by_idempotency_key(session, idempotency_key)
-    if existing:
-        return existing
     return await create_payment(session, data, idempotency_key)
 
 
