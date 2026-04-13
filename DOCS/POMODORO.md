@@ -89,3 +89,6 @@ Making sure the project runs, learning a lesson for splitting CRUD operations.
 ##### Third session (25m)
 Committing project. Notifying peers.
 Linting, brushing up the project.
+
+##### 4th session (25m)
+Finishing project, comitting pomodoro sessions
