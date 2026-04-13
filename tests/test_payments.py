@@ -1,10 +1,10 @@
-import pytest
+import uuid
 
 from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from app.db.models.payment import Outbox, PaymentStatus
+from app.db.models.payment import Outbox, Payment, Currency, PaymentStatus
 from tests.conftest import AUTH_HEADERS, IDEM_HEADERS, PAYMENT_BODY
 
 
@@ -168,3 +168,22 @@ async def test_create_payment_outbox_linked_to_correct_payment(client: AsyncClie
         result = await s.execute(select(Outbox))
         entry = result.scalars().first()
     assert str(entry.payment_id) == payment_id
+
+
+async def test_payment_created_at_set_by_database(test_engine):
+    factory = async_sessionmaker(test_engine, expire_on_commit=False)
+    async with factory() as s:
+        payment = Payment(
+            idempotency_key=str(uuid.uuid4()),
+            amount=100,
+            currency=Currency.RUB,
+            description="test",
+            webhook_url="http://localhost:9999/webhook",
+            status=PaymentStatus.pending,
+        )
+        s.add(payment)
+        await s.flush()
+        await s.commit()
+        await s.refresh(payment)
+        assert payment.created_at is not None
+        assert payment.created_at.tzinfo is not None

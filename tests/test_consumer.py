@@ -1,13 +1,13 @@
+# pylint: disable=unused-argument
+
 import uuid
-from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
-import pytest_asyncio
-from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy import select
 
-from app.db.models.payment import Currency, Outbox, Payment, PaymentStatus
+import httpx
+
+from app.db.models.payment import Currency, Payment, PaymentStatus
 from app.workers.consumer.handler import process_payment
 from app.workers.consumer.webhook import send_webhook
 
@@ -90,7 +90,7 @@ async def test_send_webhook_success(mock_post):
 
 @patch("asyncio.sleep", new_callable=AsyncMock)
 async def test_send_webhook_retries_on_failure(mock_sleep):
-    with patch("httpx.AsyncClient.post", AsyncMock(side_effect=Exception("connection error"))):
+    with patch("httpx.AsyncClient.post", AsyncMock(side_effect=httpx.NetworkError("connection error"))):
         result = await send_webhook("http://localhost:9999/webhook", {"payment_id": "123"})
     assert result is False
     assert mock_sleep.call_count == settings.webhook_retry_attempts - 1
@@ -110,7 +110,7 @@ async def test_send_webhook_exponential_backoff(mock_sleep):
 async def test_send_webhook_succeeds_on_second_attempt(mock_sleep):
     mock_response = MagicMock()
     mock_response.raise_for_status = MagicMock()
-    side_effects = [Exception("first attempt fails"), mock_response]
+    side_effects = [httpx.NetworkError("first attempt fails"), mock_response]
     with patch("httpx.AsyncClient.post", AsyncMock(side_effect=side_effects)):
         result = await send_webhook("http://localhost:9999/webhook", {"payment_id": "123"})
     assert result is True

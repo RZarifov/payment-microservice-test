@@ -26,7 +26,7 @@ async def process_payment(payment_id: str, factory: async_sessionmaker[AsyncSess
         payment = result.scalar_one_or_none()
 
         if not payment:
-            logger.error("payment %s not found", payment_id)
+            logger.error(f"payment {payment_id} not found")
             return
 
         success = await _emulate_processing()
@@ -48,7 +48,7 @@ async def process_payment(payment_id: str, factory: async_sessionmaker[AsyncSess
     delivered = await send_webhook(webhook_url, webhook_payload)
 
     if not delivered:
-        logger.error("webhook delivery exhausted for payment %s, publishing to DLQ", payment_id)
+        logger.error(f"webhook delivery exhausted for payment {payment_id}, publishing to DLQ")
         await broker.publish(
             {"payment_id": payment_id, "reason": "webhook_delivery_failed"},
             queue="payments.dlq",

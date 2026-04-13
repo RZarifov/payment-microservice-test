@@ -4,7 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Numeric, String, func
+from sqlalchemy import DateTime, Enum, ForeignKey, Numeric, String, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -18,9 +18,9 @@ class Currency(str, enum.Enum):
 
 
 class PaymentStatus(str, enum.Enum):
-    pending = "pending"
-    succeeded = "succeeded"
-    failed = "failed"
+    pending = "pending" # pylint: disable=invalid-name
+    succeeded = "succeeded"  # pylint: disable=invalid-name
+    failed = "failed"  # pylint: disable=invalid-name
 
 
 class Payment(Base):
@@ -36,11 +36,14 @@ class Payment(Base):
 
     payment_metadata: Mapped[dict[str, Any] | None] = mapped_column("metadata", JSONB, nullable=True)
 
-    status: Mapped[PaymentStatus] = mapped_column(Enum(PaymentStatus, name="payment_status"), default=PaymentStatus.pending)
+    status: Mapped[PaymentStatus] = mapped_column(
+        Enum(PaymentStatus, name="payment_status"),
+        default=PaymentStatus.pending
+        )
 
     webhook_url: Mapped[str] = mapped_column(String)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text("now()"))
     processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
@@ -50,5 +53,5 @@ class Outbox(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     payment_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("payments.id"))
 
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text("now()"))
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

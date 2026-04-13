@@ -1,14 +1,17 @@
+# pylint: disable=redefined-outer-name
+
 import uuid
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, patch
 
-import pytest
 import pytest_asyncio
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from app.db.models.payment import Currency, Outbox, Payment, PaymentStatus
 from app.workers.outbox.outbox_worker import _poll_once
-from tests.conftest import test_engine, make_payment
+from tests.conftest import make_payment
 
 
 @pytest_asyncio.fixture(loop_scope="session")
@@ -30,14 +33,13 @@ async def test_poll_publishes_pending_entry(mock_broker, factory):
 
 
 @patch("app.workers.outbox.outbox_worker.broker")
-async def test_poll_sets_published_at(mock_broker, factory, test_engine):
+async def test_poll_sets_published_at(mock_broker, factory):
     mock_broker.publish = AsyncMock()
     payment = await make_payment(factory)
 
     await _poll_once(factory)
 
     async with factory() as s:
-        from sqlalchemy import select
         result = await s.execute(select(Outbox).where(Outbox.payment_id == payment.id))
         entry = result.scalar_one()
     assert entry.published_at is not None

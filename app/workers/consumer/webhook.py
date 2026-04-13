@@ -18,11 +18,16 @@ async def send_webhook(url: str, payload: dict) -> bool:
                 response = await client.post(url, json=payload, timeout=settings.webhook_timeout)
                 response.raise_for_status()
                 return True
-            except Exception:
+            except (httpx.HTTPError, httpx.TimeoutException):
                 logger.warning(
                     f"webhook attempt {attempt}/{settings.webhook_retry_attempts} failed for {url}"
                 )
                 if attempt < settings.webhook_retry_attempts:
                     await asyncio.sleep(delay)
                     delay *= 2
+            except Exception as e: # pylint: disable=broad-exception-caught
+                logger.critical(
+                    f"Unhandled exception happened: {e}"
+                )
+
     return False

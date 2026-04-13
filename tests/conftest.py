@@ -1,6 +1,7 @@
+# pylint: disable=redefined-outer-name
+
 import uuid
 
-import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text

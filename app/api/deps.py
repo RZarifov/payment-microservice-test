@@ -1,5 +1,4 @@
 from fastapi import Header, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import async_session_factory
 from app.settings.config import settings

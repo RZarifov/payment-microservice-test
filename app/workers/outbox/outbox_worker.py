@@ -36,6 +36,6 @@ async def run_outbox_poller(factory: async_sessionmaker[AsyncSession]) -> None:
     while True:
         try:
             await _poll_once(factory)
-        except Exception:
+        except Exception: # pylint: disable=broad-exception-caught
             logger.exception("outbox poll failed")
         await asyncio.sleep(settings.outbox_poll_interval)

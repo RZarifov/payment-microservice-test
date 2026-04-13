@@ -17,7 +17,7 @@ logging.basicConfig(level=settings.log_level)
 
 # !NOTE: Maybe full-blown class is better. For control
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     await broker.connect()
     poller_task = asyncio.create_task(run_outbox_poller(async_session_factory))
     yield
