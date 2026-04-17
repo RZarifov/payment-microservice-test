@@ -1,10 +1,11 @@
 import enum
 import uuid
 from datetime import datetime
+
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Numeric, String, text
+from sqlalchemy import Enum, ForeignKey, Numeric, String, DateTime
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -26,7 +27,6 @@ class PaymentStatus(str, enum.Enum):
 class Payment(Base):
     __tablename__ = "payments"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     idempotency_key: Mapped[str] = mapped_column(String, unique=True, index=True)
 
     amount: Mapped[Decimal] = mapped_column(Numeric(18, 2))
@@ -43,15 +43,12 @@ class Payment(Base):
 
     webhook_url: Mapped[str] = mapped_column(String)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text("now()"))
     processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class Outbox(Base):
     __tablename__ = "outbox"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     payment_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("payments.id"))
 
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text("now()"))
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
