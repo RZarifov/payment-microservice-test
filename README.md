@@ -120,7 +120,7 @@ make run_both
 # создание платежа
 curl -i -X POST http://localhost:8000/api/v1/payments \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: luna_test" \
+  -H "X-API-Key: micropayments_test" \
   -H "Idempotency-Key: test-001" \
   -d '{
     "amount": "100.00",
@@ -132,7 +132,7 @@ curl -i -X POST http://localhost:8000/api/v1/payments \
 # получение платежа
 PAYMENT_ID=your-payment-id-here
 curl -i http://localhost:8000/api/v1/payments/$PAYMENT_ID \
-  -H "X-API-Key: luna_test"
+  -H "X-API-Key: micropayments_test"
 ```
 
 ### Polling статуса платежа
@@ -144,7 +144,7 @@ PAYMENT_ID=your-payment-id-here
 
 while true; do
   STATUS=$(curl -s http://localhost:8000/api/v1/payments/$PAYMENT_ID \
-    -H "X-API-Key: luna_test" | python3 -c "import sys,json; print(json.load(sys.stdin)['status'])")
+    -H "X-API-Key: micropayments_test" | python3 -c "import sys,json; print(json.load(sys.stdin)['status'])")
   echo "status: $STATUS"
   if [ "$STATUS" != "pending" ]; then
     break

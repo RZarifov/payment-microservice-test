@@ -17,16 +17,16 @@ from app.main import app
 from app.settings.config import settings
 
 
-TEST_DATABASE_URL = settings.database_url.rsplit("/", 1)[0] + "/luna_test_test"
+TEST_DATABASE_URL = settings.database_url.rsplit("/", 1)[0] + "/micropayments_test_test"
 
 
 @pytest_asyncio.fixture(scope="session")
 async def test_engine():
     admin_engine = create_async_engine(settings.database_url, isolation_level="AUTOCOMMIT")
     async with admin_engine.connect() as conn:
-        result = await conn.execute(text("SELECT 1 FROM pg_database WHERE datname = 'luna_test_test'"))
+        result = await conn.execute(text("SELECT 1 FROM pg_database WHERE datname = 'micropayments_test_test'"))
         if not result.scalar():
-            await conn.execute(text("CREATE DATABASE luna_test_test"))
+            await conn.execute(text("CREATE DATABASE micropayments_test_test"))
     await admin_engine.dispose()
 
     engine = create_async_engine(TEST_DATABASE_URL, poolclass=NullPool)
@@ -91,5 +91,5 @@ PAYMENT_BODY = {
 }
 
 
-AUTH_HEADERS = {"X-API-Key": "luna_test"}
+AUTH_HEADERS = {"X-API-Key": "micropayments_test"}
 IDEM_HEADERS = {**AUTH_HEADERS, "Idempotency-Key": "test-001"}
